@@ -2,7 +2,7 @@
 ``` 
 cd ~
 wget https://raw.githubusercontent.com/fogiznt/OVPN-Ubuntu-20.04-EC/main/openvpn.sh -O openvpn-install.sh
-chmod +x 
+chmod +x openvpn-install.sh
 ./openvpn-install.sh
 ```
 
