@@ -72,7 +72,7 @@ if ! [ -f /etc/openvpn/server.crt ];then echo -e "${RED}ОШИБКА, ключ �
 
 echo -n -e "                CRL "
 EASYRSA_CRL_DAYS=3650 ./easyrsa gen-crl
-cp crl.pem /etc/openvpn
+cp pki/crl.pem /etc/openvpn
 if ! [ -f /etc/openvpn/crl.pem ];then echo -e "${RED}ОШИБКА, ключи crl не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
 echo -n -e "                TLS-crypt "
