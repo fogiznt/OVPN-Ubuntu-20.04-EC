@@ -43,6 +43,13 @@ cd /usr/share/easy-rsa/
 
 echo -e "Генерация сертификатов: "
 
+
+echo "set_var EASYRSA_ALGO ec" >vars
+echo "set_var EASYRSA_CURVE prime256v1" >>vars
+SERVER_CN="cn_$(head /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)"
+echo "set_var EASYRSA_REQ_CN $SERVER_CN" >>vars
+
+
 ./easyrsa init-pki >&- 2>&-
 echo -n "               CA "
 export EASYRSA_BATCH=1
@@ -58,11 +65,19 @@ if ! [ -f /etc/openvpn/server.key ];then echo -e "${RED}ОШИБКА, серти
 echo -n -e "               Ключ сервера "
 if ! [ -f /etc/openvpn/server.crt ];then echo -e "${RED}ОШИБКА, ключ сервера не сгенерирован, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
-echo -n -e "               Ключи Диффи-Хеллмана "
-./easyrsa gen-dh >&- 2>&-
-cp pki/dh.pem /etc/openvpn
-if ! [ -f /etc/openvpn/dh.pem ];then echo -e "${RED}ОШИБКА, ключи Диффи-Хеллмана не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
+#echo -n -e "               Ключи Диффи-Хеллмана "
+#./easyrsa gen-dh >&- 2>&-
+#cp pki/dh.pem /etc/openvpn
+#if ! [ -f /etc/openvpn/dh.pem ];then echo -e "${RED}ОШИБКА, ключи Диффи-Хеллмана не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
+
+echo -n -e "                CRL "
+EASYRSA_CRL_DAYS=3650 ./easyrsa gen-crl
+cp crl.pem /etc/openvpn
+if ! [ -f /etc/openvpn/crl.pem ];then echo -e "${RED}ОШИБКА, ключи crl не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
+
+echo -n -e "                TLS-crypt "
 openvpn --genkey --secret /etc/openvpn/tls.key
+if ! [ -f /etc/openvpn/tls.key ];then echo -e "${RED}ОШИБКА, ключи TLS не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
 echo -n -e "${DEFAULT}Настройка и запуск OpenVPN сервера "
 
@@ -72,31 +87,40 @@ dev tun
 proto udp4
 server 10.8.8.0 255.255.255.0
 port 443
+
 ca ca.crt
 cert server.crt
 key server.key
-dh dh.pem
-cipher AES-256-CBC
-auth SHA512
-tls-version-min 1.3
-tls-cipher TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384
+dh none
+
+cipher AES-128-GCM
+auth SHA1
+
+tls-version-min 1.2
+tls-cipher TLS-ECDHE-ECDSA-WITH-AES-128-GCM-SHA256
 tls-crypt tls.key
 tls-server
+ecdh-curve prime256v1
+crl-verify crl.pem
+
 topology subnet
 client-to-client
 client-config-dir ccd
+
 push "redirect-gateway def1 bypass-dhcp"
 push "dhcp-option DNS 8.8.8.8"
 push "dhcp-option DNS 8.8.4.4"
-tun-mtu 1500
-keysize 256
-key-method 2
+
+#tun-mtu 1500
+#keysize 256
+#key-method 2
 #sndbuf 524288
 #rcvbuf 524288
 #push "sndbuf 524288"
 #push "rcvbuf 524288"
 #comp-lzo
 #push "comp-lzo yes"
+
 keepalive 10 30
 persist-key
 persist-tun
@@ -243,6 +267,7 @@ ifconfig-push \$local_ip 255.255.255.0
 EOF
 cd /etc/openvpn/clients/
 zip \$username.zip -P \$password  \$username.ovpn
+cp \$username.ovpn ~/
 cd /var/www/html/clients/
 mv /etc/openvpn/clients/\$username.zip .
 echo "\${GREEN} Учётная запись добавлена\${DEFAULT}";;
@@ -284,10 +309,10 @@ echo -e "                                                             /_/       
 echo -e "                                                                                               ${DEFAULT}";
 
 echo -e "${GREEN}Основные параметры сервера
-public ip - $ip	    cipher - AES-256-CBC
+public ip - $ip	    cipher - AES-256-GCM
 proto - udp4                    tls-crypt - enable
-port - 443                      tls version - 1.3
+port - 443                      tls version - 1.2
 ip in VPN network - 10.8.8.1    tls-cipher - TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384
-DNS for clients - 8.8.8.8       auth - SHA512
-mode - tun                      key-size - 256
-tun-mtu - 1500                  key-method - 2${DEFAULT}"
+DNS for clients - 8.8.8.8       auth - SHA256
+mode - tun                      
+    ${DEFAULT}"
