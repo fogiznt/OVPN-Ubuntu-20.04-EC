@@ -15,7 +15,7 @@ echo -e "/ /_/ /  / _ \/ // / / _ \/ __// // /      / __/ / // / _ / // //_  _/"
 echo -e "\____/  /_.__/\_,_/ /_//_/\__/ \_,_/      /____/ \___/ (_)\___/  /_/  ";
 echo -e "                                                                      ${DEFAULT}";
 
-echo -n -e "${GREEN}Обновление пакетов ${DEFAULT}" & echo $(apt update 2>/dev/null | grep packages | cut -d '.' -f 1)
+echo -n -e "${DEFAULT}Обновление пакетов ${DEFAULT}" & echo -e ${GREEN} $(apt update 2>/dev/null | grep packages | cut -d '.' -f 1 | tr -cd '[[:digit:]]') "${DEFAULT} пакетов могут быть обновлены."
 echo -e "Установка пакетов: "
 
 echo -n -e "               openvpn " & echo -n $(apt install openvpn -y >&- 2>&-)
@@ -168,21 +168,21 @@ touch account_manager.sh
 cat >account_manager.sh <<FOE
 #!/bin/sh
 RED='\033[37;0;31m'
-GREEN='\033[0;32;4m'
+GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 DEFAULT='\033[0m'
 f=1
 while f=1
 do
 echo "\n\${DEFAULT}Настройка пользователей VPN\nВыберите действие\${DEFAULT}
-\${GREEN}                                      \${DEFAULT}
+\${GREEN}---------------------------------------\${DEFAULT}
 \${DEFAULT}1 - Список учётных записей VPN        \033[0;32m|\${DEFAULT}
 \${DEFAULT}2 - Список подключённых пользователей \033[0;32m|\${DEFAULT}
 \${DEFAULT}3 - Пароли от архивов                 \033[0;32m|\${DEFAULT}
 \${DEFAULT}4 - Добавить учётную запись           \033[0;32m|\${DEFAULT}
 \${DEFAULT}5 - Удалить учётную запись            \033[0;32m|\${DEFAULT}
 \${DEFAULT}6 - Выйти из программы\${DEFAULT}                \033[0;32m|\${DEFAULT}
-\${GREEN}                                      \${DEFAULT}"
+\${GREEN}---------------------------------------\${DEFAULT}"
 read value
 case "\$value" in
 1) echo "\${GREEN}Список учётных записей для подключения:\${DEFAULT}"
@@ -321,10 +321,10 @@ echo -e "                                                             /_/       
 echo -e "                                                                                               ${DEFAULT}";
 
 echo -e "${GREEN}Основные параметры сервера
-public ip - $ip	    cipher - AES-256-GCM
+public ip - $ip	    cipher - AES-128-GCM
 proto - udp4                    tls-crypt - enable
 port - 443                      tls version - 1.2
 ip in VPN network - 10.8.8.1    tls-cipher - TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384
 DNS for clients - 8.8.8.8       auth - SHA256
-mode - tun                      
+mode - tun                      ecdh-curve - prime256v1     
     ${DEFAULT}"
