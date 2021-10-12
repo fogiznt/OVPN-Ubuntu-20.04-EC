@@ -259,7 +259,7 @@ block-outside-dns
 setenv opt block-outside-dns
 explicit-exit-notify
 nobind
-verb3
+#verb3
 <ca>
 \$ca
 </ca>
