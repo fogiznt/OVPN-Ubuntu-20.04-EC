@@ -139,7 +139,7 @@ else
 echo -e "${GREEN}сервер запущен${DEFAULT}"
 fi
 
-ip=$(curl check-host.net/ip) >&- 2>&-
+ip=$(curl check-host.net/ip 2>/dev/null) >&- 2>&-
 #ip=$(hostname -i)
 echo -e "${GREEN}SNAT 10.8.8.0/24 -------> $ip ${DEFAULT}"
 iptables -t nat -A POSTROUTING -s 10.8.8.0/24 -j SNAT --to-source $ip
