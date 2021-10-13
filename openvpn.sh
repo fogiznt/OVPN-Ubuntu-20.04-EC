@@ -55,29 +55,29 @@ echo -n "               CA "
 export EASYRSA_BATCH=1
 ./easyrsa build-ca nopass >&- 2>&-
 cp pki/ca.crt /etc/openvpn/
-if ! [ -f /etc/openvpn/ca.crt ];then echo -e "${RED}ОШИБКА, сертификат CA не сгенерирован, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
+if ! [ -f /etc/openvpn/ca.crt ];then echo -e "${RED}ОШИБКА, сертификат CA не сгенерирован. ${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
 echo -n -e "               Сертификат сервера "
 ./easyrsa build-server-full server nopass >&- 2>&-
 cp pki/private/server.key /etc/openvpn
 cp pki/issued/server.crt /etc/openvpn
-if ! [ -f /etc/openvpn/server.key ];then echo -e "${RED}ОШИБКА, сертификат сервера не сгенерирован, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}"; fi
+if ! [ -f /etc/openvpn/server.key ];then echo -e "${RED}ОШИБКА, сертификат сервера не сгенерирован. ${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}"; fi
 echo -n -e "               Ключ сервера "
-if ! [ -f /etc/openvpn/server.crt ];then echo -e "${RED}ОШИБКА, ключ сервера не сгенерирован, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
+if ! [ -f /etc/openvpn/server.crt ];then echo -e "${RED}ОШИБКА, ключ сервера не сгенерирован. ${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
 #echo -n -e "               Ключи Диффи-Хеллмана "
 #./easyrsa gen-dh >&- 2>&-
 #cp pki/dh.pem /etc/openvpn
-#if ! [ -f /etc/openvpn/dh.pem ];then echo -e "${RED}ОШИБКА, ключи Диффи-Хеллмана не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
+#if ! [ -f /etc/openvpn/dh.pem ];then echo -e "${RED}ОШИБКА, ключи Диффи-Хеллмана не сгенерированы. ${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
 echo -n -e "                CRL "
 EASYRSA_CRL_DAYS=3650 ./easyrsa gen-crl >&- 2>&-
 cp pki/crl.pem /etc/openvpn
-if ! [ -f /etc/openvpn/crl.pem ];then echo -e "${RED}ОШИБКА, ключи crl не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
+if ! [ -f /etc/openvpn/crl.pem ];then echo -e "${RED}ОШИБКА, ключи crl не сгенерированы. ${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
 echo -n -e "                TLS-crypt "
 openvpn --genkey --secret /etc/openvpn/tls.key
-if ! [ -f /etc/openvpn/tls.key ];then echo -e "${RED}ОШИБКА, ключи TLS не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
+if ! [ -f /etc/openvpn/tls.key ];then echo -e "${RED}ОШИБКА, ключи TLS не сгенерированы. ${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
 echo -n -e "${DEFAULT}Настройка и запуск OpenVPN сервера "
 
