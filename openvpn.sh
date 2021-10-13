@@ -71,7 +71,7 @@ if ! [ -f /etc/openvpn/server.crt ];then echo -e "${RED}ОШИБКА, ключ �
 #if ! [ -f /etc/openvpn/dh.pem ];then echo -e "${RED}ОШИБКА, ключи Диффи-Хеллмана не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
 echo -n -e "                CRL "
-EASYRSA_CRL_DAYS=3650 ./easyrsa gen-crl
+EASYRSA_CRL_DAYS=3650 ./easyrsa gen-crl >&- 2>&-
 cp pki/crl.pem /etc/openvpn
 if ! [ -f /etc/openvpn/crl.pem ];then echo -e "${RED}ОШИБКА, ключи crl не сгенерированы, выход из программы${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
