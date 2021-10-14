@@ -308,7 +308,7 @@ FOE
 chmod +x account_manager.sh
 
 if ! [ "$(systemctl status apache2 | grep -o "running" )" = "running" ]; then
-echo -e "${RED}- не критичная ошибка,web-сервер не запустился, все ваши файлы для подключения будут лежать в /var/www/html/clients${DEFAULT}"
+echo -e "${RED}- не критичная ошибка,web-сервер не запустился, все ваши клиентские файлы будут лежать в директории /root/${DEFAULT}"
 else
 echo -e "${GREEN}завершена.${DEFAULT}"
 fi
