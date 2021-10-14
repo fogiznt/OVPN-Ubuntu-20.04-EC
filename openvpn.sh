@@ -298,7 +298,7 @@ rm /usr/share/easy-rsa/pki/reqs/\$username.req
 else
 echo "\${RED}Неправильно введено имя учётной записи\${DEFAULT}"
 fi;;
-3)echo "\${RED}Логин/пароль от архива\${DEFAULT}"
+3)echo "\${GREEN}Логин/пароль от архивов\${DEFAULT}"
 cat /etc/openvpn/passwords;;
 6)echo "\${GREEN} Выход из программы\${DEFAULT}"
 exit;;
