@@ -219,7 +219,7 @@ fi
 read local_ip
 cd /etc/openvpn/
 touch passwords
-cat >passwords <<EOF
+cat >>passwords <<EOF
 \$username \$password
 EOF
 cd /usr/share/easy-rsa
