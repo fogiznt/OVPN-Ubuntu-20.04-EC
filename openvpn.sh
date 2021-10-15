@@ -191,7 +191,7 @@ if [ "\$val1" = "" ];
 then
 echo "\${GREEN}Учётных записей для подключения нет.Добавте новые\${DEFAULT}"
 else
-grep -H -o "10.8.8.*" /etc/openvpn/ccd/* | cut -b 18-60
+grep -H -o "10.8.*" /etc/openvpn/ccd/* | cut -b 18- | awk '{print \$1}' |  sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
 fi;;
 2)
 val=\$(cat /etc/openvpn/status.log | grep 10.8.8)
@@ -214,11 +214,10 @@ then
 echo "\${GREEN}Рекомендую использовать диапозон адресов 10.8.8.100 - 10.8.8.200\${DEFAULT}"
 else
 echo "\${GREEN}Для сравнения - список назначенных учётным записям локальных ip адресов\${DEFAULT}"
-grep -H -o "10.8.8.*" /etc/openvpn/ccd/* | cut -b 18-60
+grep -H -o "10.8.*" /etc/openvpn/ccd/* | cut -b 18- | awk '{print \$1}' |  sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
 fi
 read local_ip
 cd /etc/openvpn/
-touch passwords
 cat >>passwords <<EOF
 \$username \$password
 EOF
@@ -284,6 +283,7 @@ cd /var/www/html/clients/
 mv /etc/openvpn/clients/\$username.zip .
 echo "\${GREEN} Учётная запись добавлена\${DEFAULT}";;
 5) echo "\${RED}Удаление учётной записи\${DEFAULT}\nВведите имя учётной записи"
+grep -H -o "10.8.*" /etc/openvpn/ccd/* | cut -b 18- | awk '{print \$1}' |  sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
 read username
 if  [ -e /etc/openvpn/ccd/\$username ];
 then
