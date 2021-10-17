@@ -134,10 +134,9 @@ touch /etc/openvpn/passwords
 
 systemctl start openvpn@server
 if ! [ "$(systemctl status openvpn@server | grep -o "running" )" = "running" ]; then
-echo -e "${RED}ОШИБКА, Openvpn сервер не запустился, выход из программы. \n Вы можете посмотрет>else
-echo -e "${GREEN}запущен${DEFAULT}"
-else 
 echo -e "${RED}ошибка, вы можете посмотреть причину - cat /etc/openvpn/log.log${DEFAULT}"
+else 
+echo -e "${GREEN}запущен${DEFAULT}"
 fi
 systemctl enable openvpn@server >&- 2>&-
 
