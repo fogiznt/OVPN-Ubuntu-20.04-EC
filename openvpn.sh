@@ -148,7 +148,7 @@ echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
 netfilter-persistent save >&- 2>&-
 echo -e "               SNAT 10.8.8.0/24 ---> ${GREEN}$ip ${DEFAULT} "
 
-echo -e -n "               Apache2"
+echo -e -n "               Apache2 "
 cd /var/www/html/
 mkdir clients
 rm index.html
