@@ -79,8 +79,8 @@ echo -n -e "               TLS-crypt "
 openvpn --genkey --secret /etc/openvpn/tls.key
 if ! [ -f /etc/openvpn/tls.key ];then echo -e "${RED}ОШИБКА, ключи TLS не сгенерированы. ${DEFAULT}" exit;else echo -e "${GREEN}OK${DEFAULT}";fi
 
-echo -n -e "${DEFAULT}Настройка и запуск OpenVPN сервера "
-
+echo -e "Окончание установки: "
+echo -n -e "               OVPN-server "
 cd /etc/openvpn
 cat >>server.conf <<EOF
 dev tun
@@ -134,21 +134,22 @@ touch /etc/openvpn/passwords
 
 systemctl start openvpn@server
 if ! [ "$(systemctl status openvpn@server | grep -o "running" )" = "running" ]; then
-echo -e "${RED}ОШИБКА, Openvpn сервер не запустился, выход из программы. \n Вы можете посмотреть логи сервер - cat /etc/openvpn/log.log или systemctl status openvpn@server${DEFAULT}"
-else
-echo -e "${GREEN}сервер запущен${DEFAULT}"
+echo -e "${RED}ОШИБКА, Openvpn сервер не запустился, выход из программы. \n Вы можете посмотрет>else
+echo -e "${GREEN}запущен${DEFAULT}"
+else 
+echo -e "${RED}ошибка, вы можете посмотреть причину - cat /etc/openvpn/log.log${DEFAULT}"
 fi
 systemctl enable openvpn@server >&- 2>&-
 
 ip=$(curl check-host.net/ip 2>/dev/null) >&- 2>&-
 #ip=$(hostname -i)
-echo -e "${GREEN}SNAT 10.8.8.0/24 -------> $ip ${DEFAULT}"
 iptables -t nat -A POSTROUTING -s 10.8.8.0/24 -j SNAT --to-source $ip
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
 netfilter-persistent save >&- 2>&-
+echo -e "               SNAT 10.8.8.0/24 ---> ${GREEN}$ip ${DEFAULT} "
 
-echo -n -e "Настройка web-сервера apache2 "
+echo -e -n "               Apache2"
 cd /var/www/html/
 mkdir clients
 rm index.html
@@ -164,6 +165,12 @@ cat >>index.html <<EOF
 </body>
 </html>
 EOF
+if ! [ "$(systemctl status apache2 | grep -o "running" )" = "running" ]; then
+echo -e "${RED}ошибка, файлы для подключения будут лежать в директории /root/${DEFAULT}"
+else
+echo -e "${GREEN}запущен${DEFAULT}"
+fi
+
 cd ~
 touch account_manager.sh
 cat >account_manager.sh <<FOE
@@ -326,12 +333,6 @@ esac
 done
 FOE
 chmod +x account_manager.sh
-
-if ! [ "$(systemctl status apache2 | grep -o "running" )" = "running" ]; then
-echo -e "${RED}- не критичная ошибка,web-сервер не запустился, все ваши клиентские файлы будут лежать в директории /root/${DEFAULT}"
-else
-echo -e "${GREEN}завершена.${DEFAULT}"
-fi
 
 echo -e "${GREEN}   ____             __          __   __                                __       __           __";
 echo -e "  /  _/  ___   ___ / /_ ___ _  / /  / /      ____ ___   __ _    ___   / / ___  / /_ ___  ___/ /";
