@@ -138,7 +138,7 @@ echo -e "${RED}ОШИБКА, Openvpn сервер не запустился, в�
 else
 echo -e "${GREEN}сервер запущен${DEFAULT}"
 fi
-systemctl enable openvpn@server
+systemctl enable openvpn@server >&- 2>&-
 
 ip=$(curl check-host.net/ip 2>/dev/null) >&- 2>&-
 #ip=$(hostname -i)
