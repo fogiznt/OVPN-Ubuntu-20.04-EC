@@ -108,8 +108,8 @@ client-to-client
 client-config-dir ccd
 
 push "redirect-gateway def1 bypass-dhcp"
-push "dhcp-option DNS 8.8.8.8"
-push "dhcp-option DNS 8.8.4.4"
+push "dhcp-option DNS 1.1.1.1"
+push "dhcp-option DNS 1.0.0.1"
 
 #tun-mtu 1500
 #keysize 256
@@ -204,7 +204,28 @@ else
 echo "\${GREEN}Локальный ip,учётка,ip адрес пользователя\${DEFAULT}"
 cat /etc/openvpn/status.log | grep 10.8.8
 fi;;
-4) echo "\${GREEN}Добавление учётной запсиси\${DEFAULT}\nВведите имя учётной записи"
+3)echo "\${GREEN}Логин/пароль от архивов\${DEFAULT}"
+cat /etc/openvpn/passwords;;
+4) echo "\${GREEN}Блокировка учётной записи\${DEFAULT}\nВведите имя учётной записи"
+read username
+if  [ -e /etc/openvpn/ccd/\$username ];
+then
+echo "disable" >> /etc/openvpn/ccd/\$username
+echo "\${GREEN}Учётная запись заблокирована\${DEFAULT}"
+else
+echo "\${RED}Неправильно введено имя учётной записи\${DEFAULT}"
+fi;;
+
+5) echo "\${GREEN}Разблокировка учётной записи\${DEFAULT}\nВведите имя учётной записи"
+read username
+if  [ -e /etc/openvpn/ccd/\$username ];
+then
+sed -i /disable/d /etc/openvpn/ccd/\$username
+echo "\${GREEN}Учётная запись разблокирована\${DEFAULT}"
+else
+echo "\${RED}Неправильно введено имя учётной записи\${DEFAULT}"
+fi;;
+6) echo "\${GREEN}Добавление учётной записи\${DEFAULT}\nВведите имя учётной записи"
 read username
 echo "\${GREEN}Введите пароль\${DEFAULT}"
 read password
@@ -283,7 +304,7 @@ cp \$username.ovpn ~/
 cd /var/www/html/clients/
 mv /etc/openvpn/clients/\$username.zip .
 echo "\${GREEN} Учётная запись добавлена\${DEFAULT}";;
-5) echo "\${RED}Удаление учётной записи\${DEFAULT}\nВведите имя учётной записи"
+7) echo "\${RED}Удаление учётной записи\${DEFAULT}\nВведите имя учётной записи"
 grep -H -o "10.8.*" /etc/openvpn/ccd/* | cut -b 18- | awk '{print \$1}' |  sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
 read username
 if  [ -e /etc/openvpn/ccd/\$username ];
@@ -299,9 +320,7 @@ rm /usr/share/easy-rsa/pki/reqs/\$username.req
 else
 echo "\${RED}Неправильно введено имя учётной записи\${DEFAULT}"
 fi;;
-3)echo "\${GREEN}Логин/пароль от архивов\${DEFAULT}"
-cat /etc/openvpn/passwords;;
-6)echo "\${GREEN} Выход из программы\${DEFAULT}"
+8)echo "\${GREEN} Выход из программы\${DEFAULT}"
 exit;;
 esac
 done
@@ -326,6 +345,6 @@ public ip - $ip	    cipher - AES-128-GCM
 proto - udp4                    tls-crypt - enable
 port - 443                      tls version - 1.2
 ip in VPN network - 10.8.8.1    tls-cipher - TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384
-DNS for clients - 8.8.8.8       auth - SHA256
+DNS for clients - 1.1.1.1       auth - SHA256
 mode - tun                      ecdh-curve - prime256v1     
     ${DEFAULT}"
