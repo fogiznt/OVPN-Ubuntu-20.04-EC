@@ -283,7 +283,7 @@ then echo "\${GREEN}Открытые пользователи:\${DEFAULT}"
         then grep -H -o "10.8.*" \$(wc -l /etc/openvpn/ccd/* | grep -w "1" | awk '{print \$2}') | cut -b 18- | awk '{print \$1}' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
         fi
 
-echo "${RED}Заблокированные пользователи:${DEFAULT}"
+echo "\${RED}Заблокированные пользователи:\${DEFAULT}"
 grep -H -B1 "disable" /etc/openvpn/ccd/* | grep -v "disable" | sed 's/-ifconfig-push /:/' | cut -b 18- | awk '{print \$1}' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
 echo "---------------------------------------"
 fi
