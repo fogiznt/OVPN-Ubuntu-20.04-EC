@@ -201,7 +201,10 @@ then
 echo "\${GREEN}Учётных записей для подключения нет.Добавте новые\${DEFAULT}"
 else
 echo "\${GREEN}Открытые пользователи:\${DEFAULT}"
+if [ "\$(wc -l /etc/openvpn/ccd/* | grep -w "1" | awk '{print \$2}')" = "" ]; then echo "";
+else
 grep -H -o "10.8.*" \$(wc -l /etc/openvpn/ccd/* | grep -w "1" | awk '{print \$2}') | cut -b 18- | awk '{print \$1}' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
+fi
 echo "\${RED}Заблокированные пользователи:\${DEFAULT}"
 grep -H -B1 "disable" /etc/openvpn/ccd/* | grep -v "disable" | sed 's/-ifconfig-push /:/' | cut -b 18- | awk '{print \$1}' | sed '/^\$/d' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
 fi;;
