@@ -200,7 +200,10 @@ if [ "\$val1" = "" ];
 then
 echo "\${GREEN}Учётных записей для подключения нет.Добавте новые\${DEFAULT}"
 else
-grep -H -o "10.8.*" /etc/openvpn/ccd/* | cut -b 18- | awk '{print \$1}' |  sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
+echo "\${GREEN}Открытые пользователи:\${DEFAULT}"
+grep -H -o "10.8.*" \$(wc -l /etc/openvpn/ccd/* | grep -w "1" | awk '{print \$2}') | cut -b 18- | awk '{print \$1}' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
+echo "\${RED}Заблокированные пользователи:\${DEFAULT}"
+grep -H -B1 "disable" /etc/openvpn/ccd/* | grep -v "disable" | sed 's/-ifconfig-push /:/' | cut -b 18- | awk '{print \$1}' | sed '/^\$/d' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
 fi;;
 2)
 val=\$(cat /etc/openvpn/status.log | grep 10.8.8)
