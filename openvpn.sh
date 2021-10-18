@@ -379,8 +379,21 @@ cp \$username.ovpn ~/
 cd /var/www/html/clients/
 mv /etc/openvpn/clients/\$username.zip .
 echo "\${GREEN} Учётная запись добавлена\${DEFAULT}";;
-7) echo "\${RED}Удаление учётной записи\${DEFAULT}\nВведите имя учётной записи"
-grep -H -o "10.8.*" /etc/openvpn/ccd/* | cut -b 18- | awk '{print \$1}' |  sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
+7) 
+echo "\${RED}Удаление учётной записи\${DEFAULT}\nВведите имя учётной записи\n"
+
+if ! [ "\$(ls /etc/openvpn/ccd/)" = "" ];
+then echo "\${GREEN}Открытые пользователи:\${DEFAULT}"
+
+        if ! [ "\$(wc -l /etc/openvpn/ccd/* | grep -w "1")" = "" ];
+        then grep -H -o "10.8.*" \$(wc -l /etc/openvpn/ccd/* | grep -w "1" | awk '{print \$2}') | cut -b 18- | awk '{print \$1}' |  sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
+        fi
+
+echo "\${RED}Заблокированные пользователи:${DEFAULT}"
+grep -H -B1 "disable" /etc/openvpn/ccd/* | grep -v "disable" | sed 's/-ifconfig-push /:/' | cut -b 18- | awk '{print \$1}' |  sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
+echo "---------------------------------------"
+fi
+
 read username
 if  [ -e /etc/openvpn/ccd/\$username ];
 then
@@ -389,9 +402,11 @@ rm /usr/share/easy-rsa/pki/issued/\$username.crt
 rm /usr/share/easy-rsa/pki/private/\$username.key
 rm /var/www/html/clients/\$username.zip
 rm /etc/openvpn/ccd/\$username
+rm /usr/share/easy-rsa/pki/reqs/\$username.req
+rm /root/\$username.ovpn
 sed -i /\$username/d /etc/openvpn/passwords
 echo "\${GREEN} Учётная запись удалёна\${DEFAULT}"
-rm /usr/share/easy-rsa/pki/reqs/\$username.req
+
 else
 echo "\${RED}Неправильно введено имя учётной записи\${DEFAULT}"
 fi;;
