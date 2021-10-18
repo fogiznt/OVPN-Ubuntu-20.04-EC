@@ -378,6 +378,7 @@ zip \$username.zip -P \$password  \$username.ovpn
 cp \$username.ovpn ~/
 cd /var/www/html/clients/
 mv /etc/openvpn/clients/\$username.zip .
+echo "\${GREEN} Пароль от архива \$username.zip - \$password \${DEFAULT}"
 echo "\${GREEN} Учётная запись добавлена\${DEFAULT}";;
 7) 
 echo "\${RED}Удаление учётной записи\${DEFAULT}\nВведите имя учётной записи\n"
