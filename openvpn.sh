@@ -208,12 +208,29 @@ echo "\${RED}Заблокированные пользователи:\${DEFAULT}
 grep -H -B1 "disable" /etc/openvpn/ccd/* | grep -v "disable" | sed 's/-ifconfig-push /:/' | cut -b 18- | awk '{print \$1}' | sed '/^\$/d' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4
 fi;;
 2)
-echo "\${GREEN}Список подключёных пользователей:\${DEFAULT}"
+echo -e "\${GREEN}Список подключённых пользователей:\n\${DEFAULT}"
 if [ "\$(cat /etc/openvpn/status.log | grep 10.8.*)" = "" ];
-then echo "\${GREEN}Нет подключённых пользователей\${DEFAULT}"
-else echo "\${GREEN}Локальный ip,учётка,ip адрес пользователя\${DEFAULT}"
-cat /etc/openvpn/status.log | grep 10.8.8
-fi;;
+then echo -e "\${GREEN}Нет подключённых пользователей\${DEFAULT}"
+else
+echo -e "\${DEFAULT}|Локальный ip|   Аккаунт    |Время подключения|   ip пользователя   |\${DEFAULT}"
+echo "              |------------|--------------|-----------------|---------------------|"
+for (( i=1;i<\$(cat /etc/openvpn/status.log | grep 10.8.8.* | wc -l)+1;i++ ))
+do
+echo -n "|\$(printf " %10s " \$(cat /etc/openvpn/status.log | grep "10.8.8.*" | sed -n ''\$i'p'| sed 's/,/ /g' | awk '{print \$1}'))|"
+echo -n "\$(printf "%11s   " \$(cat /etc/openvpn/status.log | grep "10.8.8.*" | sed -n ''\$i'p'| sed 's/,/ /g' | awk '{print \$2}'))|"
+echo -n "\$(printf "%16s " "\$(grep "\$(cat /etc/openvpn/status.log | grep "10.8.8.*" | sed -n ''\$i'p'| sed 's/,/ /g' | awk '{print \$2}')" /etc/openvpn/status.log | sed -n '1p' | sed 's/,/ /g' | awk '{print \$6,\$7,\$8}')")|"
+echo "\$(printf "%17s    " \$(cat /etc/openvpn/status.log | grep "10.8.8.*" |sed -n ''\$i'p'| sed 's/,/ /g' | awk '{print \$3}'| sed 's/:/ /g' | awk '{print \$1}'))|"
+done
+fi
+
+
+#echo "\${GREEN}Список подключёных пользователей:\${DEFAULT}"
+#if [ "\$(cat /etc/openvpn/status.log | grep 10.8.*)" = "" ];
+#then echo "\${GREEN}Нет подключённых пользователей\${DEFAULT}"
+#else echo "\${GREEN}Локальный ip,учётка,ip адрес пользователя\${DEFAULT}"
+#cat /etc/openvpn/status.log | grep 10.8.8
+#fi
+;;
 3)
 echo "\${GREEN}Логин/пароль от архивов\${DEFAULT}"
 cat /etc/openvpn/passwords;;
