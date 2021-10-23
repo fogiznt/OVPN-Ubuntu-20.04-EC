@@ -442,7 +442,7 @@ echo -e "/___/  /_//_//___/\__/ \_,_/ /_/  /_/       \__/ \___//_/_/_/ / .__//_/
 echo -e "                                                             /_/                               ";
 echo -e "                                                                                               ${DEFAULT}";
 
-echo -e "${DEFAULT}Основные параметры сервера
+echo -e "${DEFAULT}Основные параметры сервера:
 public ip - $ip	 cipher - AES-128-GCM
 proto - udp4                    tls-crypt - enable
 port - 443                      tls version - 1.2
