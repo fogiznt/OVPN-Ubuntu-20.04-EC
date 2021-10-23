@@ -213,7 +213,7 @@ if [ "\$(cat /etc/openvpn/status.log | grep 10.8.*)" = "" ];
 then echo -e "\${GREEN}Нет подключённых пользователей\${DEFAULT}"
 else
 echo -e "\${DEFAULT}|Локальный ip|   Аккаунт    |Время подключения|   ip пользователя   |\${DEFAULT}"
-echo "              |------------|--------------|-----------------|---------------------|"
+echo "|------------|--------------|-----------------|---------------------|"
 for (( i=1;i<\$(cat /etc/openvpn/status.log | grep 10.8.8.* | wc -l)+1;i++ ))
 do
 echo -n "|\$(printf " %10s " \$(cat /etc/openvpn/status.log | grep "10.8.8.*" | sed -n ''\$i'p'| sed 's/,/ /g' | awk '{print \$1}'))|"
