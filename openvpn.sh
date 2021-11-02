@@ -213,7 +213,7 @@ read value
 case "\$value" in
 1) 
 echo -e "\${GREEN}Список учётных записей для подключения:\${DEFAULT}"
-if ! [ "\$(ls /etc/openvpn/ccd/)" = "" ]; then user-list;else echo "Учётных записей нет, добавте новые.";fi;;
+user-list;;
 2)
 echo -e "\${GREEN}Список подключённых пользователей:\n\${DEFAULT}"
 if [ "\$(cat /etc/openvpn/status.log | grep 10.8.*)" = "" ];
