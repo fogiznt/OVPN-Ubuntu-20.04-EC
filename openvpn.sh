@@ -39,10 +39,10 @@ if [ "$(dpkg --get-selections apache2 | awk '{print $2}')" = "install" ]; then e
 echo -n -e "               zip " & echo -n $(apt install zip -y >&- 2>&-)
 if [ "$(dpkg --get-selections zip | awk '{print $2}')" = "install" ]; then echo -e "${GREEN}OK${DEFAULT}"; else echo -e "${RED}ОШИБКА, попробуйте установить данный пакет самостоятельно -${GREEN} apt install zip ${DEFAULT}" ;fi
 
-cd /usr/share/easy-rsa/
 
 echo -e "Генерация сертификатов: "
 
+cd /usr/share/easy-rsa/
 
 echo "set_var EASYRSA_ALGO ec" >vars
 echo "set_var EASYRSA_CURVE prime256v1" >>vars
